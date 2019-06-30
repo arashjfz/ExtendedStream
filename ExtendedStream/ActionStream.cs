@@ -6,10 +6,8 @@ namespace ExtendedStream
     public class ActionStream : Stream
     {
         private readonly StreamActions _streamActions;
-        private long _position;
         public ActionStream(StreamActions streamActions)
         {
-            _position = 0;
             _streamActions = streamActions;
         }
 
@@ -18,41 +16,36 @@ namespace ExtendedStream
         public override void Flush()
         {
             if (_streamActions.Flush == null)
-                throw new NotSupportedException();
+                throw new NotSupportedException("Flushing is not supported for this stream");
             _streamActions.Flush();
         }
 
         public override long Seek(long offset, SeekOrigin origin)
         {
             if (_streamActions.Seek == null)
-                throw new NotSupportedException();
-            return _position = _streamActions.Seek(offset, origin);
+                throw new NotSupportedException("Seeking is not supported for this stream");
+            return _streamActions.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
             if (_streamActions.SetLength == null)
-                throw new NotSupportedException();
+                throw new NotSupportedException("SetLength is not supported for this stream");
             _streamActions.SetLength(value);
-            if (value < _position)
-                _position = value;
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (_streamActions.Read == null)
-                throw new NotSupportedException();
-            int read = _streamActions.Read(buffer, offset, count);
-            _position += read;
-            return read;
+                throw new NotSupportedException("Read is not supported for this stream");
+            return _streamActions.Read(buffer, offset, count); ;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (_streamActions.Write == null)
-                throw new NotSupportedException();
+                throw new NotSupportedException("Write is not supported for this stream");
             _streamActions.Write(buffer, offset, count);
-            _position += count;
         }
 
         public override bool CanRead => _streamActions.Read != null;
@@ -66,14 +59,14 @@ namespace ExtendedStream
             get
             {
                 if (_streamActions.GetLength == null)
-                    throw new NotSupportedException();
+                    throw new NotSupportedException("Get Length is not supported for this stream");
                 return _streamActions.GetLength();
             }
         }
 
         public override long Position
         {
-            get => _position;
+            get => Seek(0,SeekOrigin.Current);
             set => Seek(value, SeekOrigin.Begin);
         }
 
