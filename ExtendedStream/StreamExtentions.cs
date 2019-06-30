@@ -66,7 +66,7 @@ namespace ExtendedStream
         }
         public static byte[] ToArray(this Stream stream)
         {
-            byte[] result = new byte[stream.Length];
+            byte[] result = new byte[stream.Length - stream.Position];
             stream.SafeRead(result, 0, result.Length);
             return result;
         }

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ExtendedStream
 {
-    internal class SubStream : Stream
+    public class SubStream : Stream
     {
         #region Fields
         private readonly Stream _baseStream;
@@ -65,8 +65,8 @@ namespace ExtendedStream
                         return _baseStream.Seek(offset, SeekOrigin.Current) - _offset;
                     case SeekOrigin.End:
                         if (_length == -1)
-                            throw new Exception("Seek from End of stream not supported in Such a Stream.");
-                        return _baseStream.Seek(offset + _offset + _length, SeekOrigin.End) - _offset;
+                            return _baseStream.Seek(offset , SeekOrigin.End) - _offset;
+                        return _baseStream.Seek(_offset + _length- offset, SeekOrigin.Begin) - _offset;
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(origin));
