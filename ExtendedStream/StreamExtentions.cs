@@ -117,5 +117,9 @@ namespace ExtendedStream
             }
         }
 
+        public static Stream ThreadSafe(this Stream stream)
+        {
+            return new ThreadSafeStream(stream);
+        }
     }
 }
